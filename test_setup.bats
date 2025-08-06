@@ -217,3 +217,42 @@ create_fake_binary() {
     # Clean up
     rm -rf "$test_dir"
 }
+
+@test "creates .claude/settings.local.json file with correct content" {
+    create_fake_binary "claude"
+    create_fake_binary "docker"
+    export PATH="$FAKE_BIN_DIR:$PATH"
+    export SI_API_TOKEN="test_header.test_payload.test_signature"
+    
+    # Create a temporary directory for test
+    local test_dir=$(mktemp -d)
+    local test_script="$test_dir/setup.sh"
+    
+    # Copy setup.sh to test directory so .claude directory is created there
+    cp ./setup.sh "$test_script"
+    
+    # Run setup from test directory
+    run bash -c "cd '$test_dir' && echo 'y' | bash setup.sh"
+    [ "$status" -eq 0 ]
+    
+    # Check that .claude directory and settings file were created
+    [ -d "$test_dir/.claude" ]
+    [ -f "$test_dir/.claude/settings.local.json" ]
+    
+    # Verify the content structure
+    local settings_content=$(cat "$test_dir/.claude/settings.local.json")
+    [[ "$settings_content" == *'"enabledMcpjsonServers"'* ]]
+    [[ "$settings_content" == *'"system-initiative"'* ]]
+    [[ "$settings_content" == *'"permissions"'* ]]
+    [[ "$settings_content" == *'"allow"'* ]]
+    [[ "$settings_content" == *'"mcp__system-initiative__schema-find"'* ]]
+    [[ "$settings_content" == *'"mcp__system-initiative__component-create"'* ]]
+    [[ "$settings_content" == *'"deny": []'* ]]
+    
+    # Check that output indicates file creation
+    [[ "$output" == *"📄 Creating Claude settings configuration"* ]]
+    [[ "$output" == *"✅ Created Claude settings at:"* ]]
+    
+    # Clean up
+    rm -rf "$test_dir"
+}

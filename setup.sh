@@ -102,6 +102,49 @@ EOF
     echo -e "${GREEN}✅ Created .mcp.json at: $mcp_file${NC}"
 }
 
+# Function to create .claude/settings.local.json file
+create_claude_settings() {
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local claude_dir="$script_dir/.claude"
+    local settings_file="$claude_dir/settings.local.json"
+    
+    echo -e "${BLUE}📄 Creating Claude settings configuration${NC}"
+    
+    # Create .claude directory if it doesn't exist
+    if [[ ! -d "$claude_dir" ]]; then
+        mkdir -p "$claude_dir"
+        echo -e "${GREEN}📁 Created .claude directory at: $claude_dir${NC}"
+    fi
+    
+    cat > "$settings_file" << EOF
+{
+  "enabledMcpjsonServers": [
+    "system-initiative"
+  ],
+  "permissions": {
+    "allow": [ 
+      "mcp__system-initiative__schema-find",
+      "mcp__system-initiative__schema-attributes-list",
+      "mcp__system-initiative__schema-attributes-documentation",
+      "mcp__system-initiative__validate-credentials",
+      "mcp__system-initiative__change-set-list",
+      "mcp__system-initiative__action-list",
+      "mcp__system-initiative__component-list",
+      "mcp__system-initiative__component-get",
+      "mcp__system-initiative__component-create",
+      "mcp__system-initiative__component-update",
+      "mcp__system-initiative__func-run-get",
+      "mcp__system-initiative__component-discover"
+    ],
+    "deny": []
+  }
+}
+EOF
+    
+    echo -e "${GREEN}✅ Created Claude settings at: $settings_file${NC}"
+}
+
 # Main script logic
 main() {
     local mcp_config_file="${1:-}"
@@ -127,6 +170,7 @@ main() {
         if [[ "$use_existing" =~ ^[Yy]$ ]]; then
             echo "✅ Using existing SI_API_TOKEN"
             create_mcp_config "$mcp_config_file"
+            create_claude_settings
             return
         fi
     fi
@@ -135,6 +179,9 @@ main() {
     
     # Create MCP configuration file
     create_mcp_config "$mcp_config_file"
+    
+    # Create Claude settings file
+    create_claude_settings
 }
 
 # Run main function
