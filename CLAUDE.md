@@ -36,3 +36,8 @@ When you create AWS Components for the user, you should always create the follow
 If no Region or AWS Credential component is present, you should tell the user to create them first.
 
 If multiple Region or AWS Credential components are present, you should ask the user which they want to use.
+
+If you are working with AWS IAM components:
+
+- Use the schema-attributes-documentation tool to understand every field.
+- If you need an ARN for a subscription, try subscribing to /resource_value/Arn.
