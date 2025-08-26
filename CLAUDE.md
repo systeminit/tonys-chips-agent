@@ -41,3 +41,124 @@ If you are working with AWS IAM components:
 
 - Use the schema-attributes-documentation tool to understand every field.
 - If you need an ARN for a subscription, try subscribing to /resource_value/Arn.
+
+#### AWS IAM Component Creation Guide
+
+When creating and configuring AWS IAM components (roles, users, policies, etc.) for specific use cases, follow these guidelines:
+
+##### Available AWS IAM Schemas
+
+These are the ONLY IAM schemas available in System Initiative:
+- **AWS::IAM::Role** - For service roles and cross-account access
+- **AWS::IAM::User** - For human users or programmatic access  
+- **AWS::IAM::Group** - For grouping users with similar permissions
+- **AWS::IAM::ManagedPolicy** - For reusable permission policies
+- **AWS::IAM::RolePolicy** - For inline policies attached to roles
+- **AWS::IAM::UserPolicy** - For inline policies attached to users
+- **AWS::IAM::InstanceProfile** - For EC2 instance roles
+
+**IMPORTANT**: These seven schemas are the ONLY IAM-related schemas available. Do not attempt to create or reference any other IAM schemas as they do not exist in this system.
+
+**Analyze Requirements**  
+   - Based on the use case, determine which IAM components are needed
+   - Consider security best practices (principle of least privilege)
+   - Plan the relationships between components
+
+**Query Schema Actions and Create Core IAM Components**
+   - **FIRST**: Use schema query tools to discover available actions for your target schema
+   - Start with the primary component (usually Role or User)  
+   - Use component-create tool with appropriate schema
+   - Configure all required properties with proper values
+   - Note: Action names are System Initiative-specific, not standard AWS API names
+
+**Configure Policies (CRITICAL - JSON Formatting)**
+   
+   **Policy Configuration Rules:**
+   - ALWAYS provide complete, valid JSON as a string  
+   - Use proper JSON escaping for quotes
+   - Include Version field ("2012-10-17")
+   - Follow AWS policy syntax exactly
+
+   **Good Example:**
+   ```
+   Trust policy for EC2 role:
+   "{
+     \"Version\": \"2012-10-17\",
+     \"Statement\": [{
+       \"Effect\": \"Allow\",
+       \"Principal\": { \"Service\": \"ec2.amazonaws.com\" },
+       \"Action\": \"sts:AssumeRole\"
+     }]
+   }"
+   ```
+
+   **Bad Example:**
+   ```
+   [object Object]
+   "{{ trust_policy }}"
+   undefined
+   ```
+
+6. **Create Supporting Components**
+   - Add any required ManagedPolicies with specific permissions
+   - Create InstanceProfile if needed for EC2 roles
+
+7. **Configure Relationships**
+   - Use component-update to set attribute subscriptions
+   - Link roles to instance profiles
+   - Attach policies to roles/users/groups
+   - Set up proper ARN references
+
+8. **Validate Configuration and Check Qualifications**
+   - Review all components for completeness
+   - Ensure JSON policies are properly formatted
+   - Verify relationships are correctly established
+   - **CRITICAL**: Query the qualifications on each schema to check for validation errors before applying the change set
+   - Address any qualification failures before proceeding
+
+##### Planning Framework
+
+Before creating components, analyze:
+- What AWS services need to be accessed?
+- Is this for human users or service roles?  
+- What's the minimum set of permissions required?
+- Are there existing policies that can be reused?
+- What security constraints should be applied?
+
+##### Common Policy Templates
+
+**S3 Read-Only Access Policy:**
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": ["s3:GetObject", "s3:ListBucket"],
+    "Resource": ["arn:aws:s3:::bucket-name/*", "arn:aws:s3:::bucket-name"]
+  }]
+}
+```
+
+**Lambda Execution Role Trust Policy:**
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow", 
+    "Principal": { "Service": "lambda.amazonaws.com" },
+    "Action": "sts:AssumeRole"
+  }]
+}
+```
+
+**EC2 Instance Role Trust Policy:**
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": { "Service": "ec2.amazonaws.com" },
+    "Action": "sts:AssumeRole"  
+  }]
+}
+```
