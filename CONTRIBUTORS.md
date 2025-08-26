@@ -10,3 +10,4 @@ We contributors:
 * Adam Jacob (@adamhjk)
 * Ryan Ryke (@rryke)
 * Paul Stack (@stack72)
+* John Watson (@johnrwatson)
