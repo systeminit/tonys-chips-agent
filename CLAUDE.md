@@ -22,6 +22,10 @@ The HEAD change set is the current state of the outside world. It cannot be edit
 
 When the user asks to create or edit anything, if they do not provide a change set for you to work in, create one for them with an appropriate name.
 
+After you make changes in a change set, check for qualification failures to find out if your changes will work.
+
+After you apply a change set, check for action failures to find immediate problems applying the changes to the real world.
+
 ### Components
 
 #### AWS Components
