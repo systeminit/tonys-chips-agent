@@ -58,7 +58,7 @@ Example:
 
 ```bash
 # Workspace A
-git clone https://github.com/systeminit/si-ai-agent.git workspace-b
+git clone https://github.com/systeminit/si-ai-agent.git workspace-a
 cd workspace-a
 export SI_WORKSPACE_TOKEN=siu_...A...
 ./setup.sh
@@ -121,13 +121,13 @@ See **LICENSE** in this repository.
 
 ## FAQ
 
-**Q:** **Does the script support non-interactive installs?**  
+**Q:** **Does the script support non-interactive installs?**
 **A:** Yes—export `SI_WORKSPACE_TOKEN` before running `./setup.sh`.
 
-**Q:** **Can I run multiple agents against different workspaces?**  
+**Q:** **Can I run multiple agents against different workspaces?**
 **A:** Yes. Each agent is 1:1 with a single workspace. **Recommended:** use a **separate repo checkout per workspace** and run `./setup.sh` in each folder with that workspace's token.
 
-**Q:** **Which OSes are supported?**  
+**Q:** **Which OSes are supported?**
 **A:** macOS, Linux, and Windows via WSL2.
 
 ## Troubleshooting
