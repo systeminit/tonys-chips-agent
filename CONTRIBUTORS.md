@@ -11,3 +11,4 @@ We contributors:
 * Ryan Ryke (@rryke)
 * Paul Stack (@stack72)
 * John Watson (@johnrwatson)
+* Aaron Dernley (@aaron-dernley)
