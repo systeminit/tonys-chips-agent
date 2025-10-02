@@ -96,9 +96,19 @@ export ANTHROPIC_MODEL=us.anthropic.claude-sonnet-4-5-20250929-v1:0
 export AWS_PROFILE=<your aws profile from ~/.aws/config>
 ```
 
-If you are using AWS SSO, you should sso in before you run `claude`
-
 Then run `claude` as described in the quickstart.
+
+### Working with AWS SSO
+
+If you are using AWS SSO, you should sso in before you run `claude`.
+You will also need to get the temporary credentials generated for the SSO session and copy them into your credentials setup in System Initiative.
+
+``` bash
+aws sso login
+aws configure export-credentials --profile <the aws profile from ~/.aws/config>
+```
+
+The output of the last command will show you the temporary Key ID, Secret Key and Session token that you can then copy into the System Initiative MyCredentials configuration.
 
 ---
 
