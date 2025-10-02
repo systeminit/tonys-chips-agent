@@ -78,6 +78,40 @@ Our `.mcp.json` will pull the latest container on startup each time. No need to 
 
 ---
 
+## Use Claude from AWS Bedrock
+
+Instead of using an Anthropic account to access Claude, you can use the same model but from your AWS Account's Bedrock Anthropic models. This allows you to pay for it as part of your AWS bill.
+
+You will have to make sure you have enabled the Anthropic Claude model in your AWS Account's [Bedrock Console Model Catalog](https://console.aws.amazon.com/bedrock/home?region=us-west-2#/model-catalog) and that your AWS IAM role has permission to run the model from Bedrock.
+
+The startup is the same as described in the Quick Start above, but before you run setup or more importantly `claude``, you should  set the following environment variables in the shell that you are going to run claude.
+
+You can lookup the id for different bedrock ANTHROPIC_MODEL IDs by going the the AWS Bedrock Console and click on [Cross-region inference](https://console.aws.amazon.com/bedrock/home?region=us-west-2#/inference-profiles
+) under `Infer` in the left Navbar of the Amazon Bedrock console page. Note that it must start with `us.` or `global.` to be an Inference profile.
+
+``` bash
+export CLAUDE_CODE_USE_BEDROCK=1
+export AWS_REGION=<aws region you are using>
+export ANTHROPIC_MODEL=us.anthropic.claude-sonnet-4-5-20250929-v1:0
+export AWS_PROFILE=<your aws profile from ~/.aws/config>
+```
+
+Then run `claude` as described in the quickstart.
+
+### Working with AWS SSO
+
+If you are using AWS SSO, you should sso in before you run `claude`.
+You will also need to get the temporary credentials generated for the SSO session and copy them into your credentials setup in System Initiative.
+
+``` bash
+aws sso login
+aws configure export-credentials --profile <the aws profile from ~/.aws/config>
+```
+
+The output of the last command will show you the temporary Key ID, Secret Key and Session token that you can then copy into the System Initiative MyCredentials configuration.
+
+---
+
 ## Need help?
 
 - **Discord:** Join our community for quick questions and help. _(Click the Discord button at the top of this README)_
