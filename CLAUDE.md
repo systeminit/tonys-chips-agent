@@ -28,6 +28,80 @@ After you apply a change set, check for action failures to find immediate proble
 
 ### Components
 
+#### Hetzner Cloud Components
+
+System Initiative supports Hetzner Cloud infrastructure management through dedicated schemas.
+
+##### Available Hetzner Schemas
+
+**Credential:**
+- **Hetzner::Credential::ApiToken** - API token for authenticating with Hetzner Cloud
+
+**Core Infrastructure:**
+- **Hetzner::Cloud::Servers** - Virtual machines
+- **Hetzner::Cloud::Volumes** - Block storage for servers
+- **Hetzner::Cloud::Networks** - Private networks for server-to-server communication
+- **Hetzner::Cloud::Firewalls** - Network access control
+- **Hetzner::Cloud::LoadBalancers** - Load balancers for traffic distribution
+- **Hetzner::Cloud::SshKeys** - SSH public keys for server authentication
+
+**IP Management:**
+- **Hetzner::Cloud::FloatingIps** - Globally assignable IPs (note: "Ips" not "IPs")
+- **Hetzner::Cloud::PrimaryIps** - Datacenter-bound IPs
+
+**Certificates & High Availability:**
+- **Hetzner::Cloud::Certificates** - TLS/SSL certificates
+- **Hetzner::Cloud::PlacementGroups** - Control server placement for availability
+
+**Reference Resources:**
+- **Hetzner::Cloud::Images** - VM disk blueprints
+- **Hetzner::Cloud::ServerTypes** - Available server configurations
+- **Hetzner::Cloud::LoadBalancerTypes** - Available load balancer configurations
+- **Hetzner::Cloud::Locations** - Geographic locations
+- **Hetzner::Cloud::Datacenters** - Virtual datacenters
+- **Hetzner::Cloud::Isos** - ISO images for custom OS (note: lowercase "isos")
+- **Hetzner::Cloud::Pricing** - Pricing information
+
+##### Creating Hetzner Components
+
+**Important Naming Convention:**
+- Schema names use **plural** form (e.g., `Hetzner::Cloud::Servers`, not `Server`)
+
+**Credential Requirements:**
+When creating Hetzner components, always set:
+- `/secrets/Hetzner Api Token`: should subscribe to a Hetzner::Credential::ApiToken component's `/secrets/Hetzner::Credential::ApiToken`
+
+**Free Resources:**
+These resources are free to create and maintain:
+- SSH Keys
+- Networks (private network definitions)
+- Firewalls (firewall rule definitions)
+- Placement Groups
+
+**Array Attribute Paths:**
+When setting array attributes, the schema uses specific patterns:
+- For simple arrays like `source_ips`, use indexed path: `/domain/rules/0/source_ips/0`
+- Do NOT append field names like `source_ipsItem` to indexed arrays
+
+**Example: Creating a Network**
+```
+/domain/name: "my-network"
+/domain/ip_range: "10.0.0.0/16"
+/domain/expose_routes_to_vswitch: false
+/secrets/Hetzner Api Token: {$source: {component: "credential-id", path: "/secrets/Hetzner::Credential::ApiToken"}}
+```
+
+**Example: Creating a Firewall**
+```
+/domain/name: "my-firewall"
+/domain/rules/0/direction: "in"
+/domain/rules/0/protocol: "tcp"
+/domain/rules/0/port: "22"
+/domain/rules/0/source_ips/0: "0.0.0.0/0"
+/domain/rules/0/description: "Allow SSH"
+/secrets/Hetzner Api Token: {$source: {component: "credential-id", path: "/secrets/Hetzner::Credential::ApiToken"}}
+```
+
 #### AWS Components
 
 System Initiative uses the CloudFormation schema through the Cloud Control service. 
