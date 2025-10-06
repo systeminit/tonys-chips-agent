@@ -12,3 +12,4 @@ We contributors:
 * Paul Stack (@stack72)
 * John Watson (@johnrwatson)
 * Aaron Dernley (@aaron-dernley)
+* Robert J. Berger (@rberger)
